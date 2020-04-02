@@ -4,14 +4,54 @@ import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+//void main() => runApp(MyApp());
+void main(){
+  runApp(
+    MaterialApp(
+   home: Scaffold(
+     appBar: AppBar(
+       title: Text('Welcome'),
+       ),
+       body: MyHome(),
+       ),
+    ),
+  );
 }
 
-class _MyAppState extends State<MyApp> {
+//class MyApp extends StatefulWidget {
+ // @override
+ //  _MyHome createState() => _MyHome();
+//}
+
+
+class MyHome extends StatelessWidget{
+  String photobutton = "Camera";
+ //String googeVI = "Test Photo";
+  @override
+  Widget build(BuildContext context){
+    return Center(
+      child: Container(
+        color: Colors.greenAccent ,
+        child: Center(
+          child: RaisedButton(
+            child: Text(photobutton),
+            onPressed: (){
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => _CameraPage()),
+              );
+            }
+              
+            ),
+            
+            ),
+          ),
+          );
+          
+  }
+  }
+
+
+  class _CameraPage extends StatelessWidget {
   String firstButtonText = 'Take photo';
   String secondButtonText = 'Record video';
   double textSize = 20;
@@ -21,6 +61,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Text('Back'),
+          onPressed: (){
+          Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MyHome()),
+              );
+        },),
       body: Container(
         color: Colors.white,
         child: Column(
@@ -62,14 +109,14 @@ class _MyAppState extends State<MyApp> {
     ImagePicker.pickImage(source: ImageSource.camera)
         .then((File recordedImage) {
       if (recordedImage != null && recordedImage.path != null) {
-        setState(() {
-          firstButtonText = 'saving in progress...';
-        });
+        //setState(() {
+         // firstButtonText = 'saving in progress...';
+        //});
         GallerySaver.saveImage(recordedImage.path, albumName: albumName)
             .then((bool success) {
-          setState(() {
-            firstButtonText = 'image saved!';
-          });
+         // setState(() {
+           // firstButtonText = 'image saved!';
+         // });
         });
       }
     });
@@ -79,14 +126,14 @@ class _MyAppState extends State<MyApp> {
     ImagePicker.pickVideo(source: ImageSource.camera)
         .then((File recordedVideo) {
       if (recordedVideo != null && recordedVideo.path != null) {
-        setState(() {
-          secondButtonText = 'saving in progress...';
-        });
+       // setState(() {
+         // secondButtonText = 'saving in progress...';
+        //});
         GallerySaver.saveVideo(recordedVideo.path, albumName: albumName)
             .then((bool success) {
-          setState(() {
-            secondButtonText = 'video saved!';
-          });
+         // setState(() {
+          //  secondButtonText = 'video saved!';
+         // });
         });
       }
     });
@@ -97,9 +144,9 @@ class _MyAppState extends State<MyApp> {
     String path =
         'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4';
     GallerySaver.saveVideo(path, albumName: albumName).then((bool success) {
-      setState(() {
-        print('Video is saved');
-      });
+      //setState(() {
+       // print('Video is saved');
+      //});
     });
   }
 
@@ -108,9 +155,17 @@ class _MyAppState extends State<MyApp> {
     String path =
         'https://image.shutterstock.com/image-photo/montreal-canada-july-11-2019-600w-1450023539.jpg';
     GallerySaver.saveImage(path, albumName: albumName).then((bool success) {
-      setState(() {
-        print('Image is saved');
-      });
+      //setState(() {
+       // print('Image is saved');
+      //});
     });
   }
-}
+
+
+
+ 
+
+
+
+
+  }
