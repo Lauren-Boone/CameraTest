@@ -1,12 +1,8 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' show join;
-import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,6 +15,7 @@ class _MyAppState extends State<MyApp> {
   String firstButtonText = 'Take photo';
   String secondButtonText = 'Record video';
   double textSize = 20;
+  String albumName ='Media';
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +65,8 @@ class _MyAppState extends State<MyApp> {
         setState(() {
           firstButtonText = 'saving in progress...';
         });
-        GallerySaver.saveImage(recordedImage.path).then((String path) {
+        GallerySaver.saveImage(recordedImage.path, albumName: albumName)
+            .then((bool success) {
           setState(() {
             firstButtonText = 'image saved!';
           });
@@ -84,7 +82,8 @@ class _MyAppState extends State<MyApp> {
         setState(() {
           secondButtonText = 'saving in progress...';
         });
-        GallerySaver.saveVideo(recordedVideo.path).then((String path) {
+        GallerySaver.saveVideo(recordedVideo.path, albumName: albumName)
+            .then((bool success) {
           setState(() {
             secondButtonText = 'video saved!';
           });
@@ -92,20 +91,23 @@ class _MyAppState extends State<MyApp> {
       }
     });
   }
+
+  // ignore: unused_element
   void _saveNetworkVideo() async {
     String path =
         'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4';
-    GallerySaver.saveVideo(path).then((bool success) {
+    GallerySaver.saveVideo(path, albumName: albumName).then((bool success) {
       setState(() {
         print('Video is saved');
       });
     });
   }
 
+  // ignore: unused_element
   void _saveNetworkImage() async {
     String path =
         'https://image.shutterstock.com/image-photo/montreal-canada-july-11-2019-600w-1450023539.jpg';
-    GallerySaver.saveImage(path).then((bool success) {
+    GallerySaver.saveImage(path, albumName: albumName).then((bool success) {
       setState(() {
         print('Image is saved');
       });
