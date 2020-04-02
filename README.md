@@ -3,7 +3,7 @@
 A new Flutter project.
 To run:
 clone project into ide then test using an emulator. 
-(not sure if this works with ios I may need to add a permision.)
+!!FIXED(not sure if this works with ios I may need to add a permision.)
 ## Getting Started
 
 This project is a starting point for a Flutter application.
