@@ -16,19 +16,19 @@ void main() => runApp(MyApp());
 
 
 class MyApp extends StatelessWidget {
- @override
+  // This widget is the root of your application.
+  @override
   Widget build(BuildContext context) {
     return OKToast(
       child: MaterialApp(
-        home: Scaffold(
-        appBar: AppBar(
-          title: Text('Welcome'),
+        title: 'Pick Image Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.lime,
         ),
-        body: MyHome(),
+        home: MyHome(title: 'Pick Image Demo'),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 //class MyApp extends StatefulWidget {
@@ -37,6 +37,8 @@ class MyApp extends StatelessWidget {
 //}
 
 class MyHome extends StatelessWidget {
+  MyHome({Key key, this.title}) : super(key: key);
+  final String title;
   String  photobutton = "Camera";
   //String googeVI = "Test Photo";
   @override
@@ -70,7 +72,7 @@ class MyHome extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ViewPhotos()),
+                        MaterialPageRoute(builder: (context) => ViewPhotos(title: "Mytitle")),
                       );
                     }),
               ),
@@ -202,7 +204,7 @@ class _MyHomePageState extends State<ViewPhotos> with LoadingDelegate {
       maxSelected: 8,
       // max picker image count
       // provider: I18nProvider.english,
-      provider: I18nProvider.chinese,
+      provider: I18nProvider.english,
       // i18n provider ,default is chinese. , you can custom I18nProvider or use ENProvider()
       rowCount: 3,
       // item row count
