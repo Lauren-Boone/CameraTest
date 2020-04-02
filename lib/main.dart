@@ -30,27 +30,73 @@ class MyHome extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Center(
-      child: Container(
-        color: Colors.greenAccent ,
-        child: Center(
-          child: RaisedButton(
-            child: Text(photobutton),
-            onPressed: (){
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context) => _CameraPage()),
-              );
-            }
-              
+      child: Column(
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            child: Container(
+            color: Colors.greenAccent ,
+            child: Center(
+              child: RaisedButton(
+                child: Text(photobutton),
+                onPressed: (){
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => _CameraPage()),
+                  );
+                }
+                  
+                ),
             ),
-            
-            ),
+
           ),
+          ),
+         
+            
+            Flexible(
+            flex: 1,
+            child: Container(
+            color: Colors.greenAccent ,
+            child: Center(
+              child: RaisedButton(
+                child: Text('Select Photos'),
+                onPressed: (){
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => _ViewPhotos()),
+                  );
+                }
+                  
+                ),
+            ),
+
+          ),
+          ),
+         
+        ],
+      ),
+          
           );
           
   }
   }
 
+class _ViewPhotos extends StatelessWidget{
+@override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Text('Back'),
+          onPressed: (){
+          Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MyHome()),
+              );
+        },),
+        ),
+    );
+  }
 
+
+}
   class _CameraPage extends StatelessWidget {
   String firstButtonText = 'Take photo';
   String secondButtonText = 'Record video';
