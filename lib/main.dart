@@ -1,171 +1,152 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:gallery_saver/gallery_saver.dart';
-import 'package:image_picker/image_picker.dart';
 
-//void main() => runApp(MyApp());
-void main(){
-  runApp(
-    MaterialApp(
-   home: Scaffold(
-     appBar: AppBar(
-       title: Text('Welcome'),
-       ),
-       body: MyHome(),
-       ),
-    ),
-  );
-}
-
-//class MyApp extends StatefulWidget {
- // @override
- //  _MyHome createState() => _MyHome();
-//}
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+// import 'package:firebase_core/firebase_core.dart'; not nessecary
 
 
-class MyHome extends StatelessWidget{
-  String photobutton = "Camera";
- //String googeVI = "Test Photo";
-  @override
-  Widget build(BuildContext context){
-    return Center(
-      child: Container(
-        color: Colors.greenAccent ,
-        child: Center(
-          child: RaisedButton(
-            child: Text(photobutton),
-            onPressed: (){
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context) => _CameraPage()),
-              );
-            }
-              
-            ),
-            
-            ),
-          ),
-          );
-          
-  }
-  }
+//code from https://github.com/tensor-programming/flutter_firebase/blob/master/lib/main.dart
+//to test our database
+void main() => runApp(MyApp());
 
-
-  class _CameraPage extends StatelessWidget {
-  String firstButtonText = 'Take photo';
-  String secondButtonText = 'Record video';
-  double textSize = 20;
-  String albumName ='Media';
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Text('Back'),
-          onPressed: (){
-          Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyHome()),
-              );
-        },),
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          children: <Widget>[
-            Flexible(
-              flex: 1,
-              child: Container(
-                child: SizedBox.expand(
-                  child: RaisedButton(
-                    color: Colors.blue,
-                    onPressed: _takePhoto,
-                    child: Text(firstButtonText,
-                        style:
-                            TextStyle(fontSize: textSize, color: Colors.white)),
-                  ),
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData.dark(),
+      home: Home(),
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  @override
+  HomeState createState() => HomeState();
+}
+
+class HomeState extends State<Home> {
+  List<Item> items = List();
+  Item item;
+  DatabaseReference itemRef;
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    item = Item("", "");
+    final FirebaseDatabase database = FirebaseDatabase.instance; //Rather then just writing FirebaseDatabase(), get the instance.  
+    itemRef = database.reference().child('items');
+    itemRef.onChildAdded.listen(_onEntryAdded);
+    itemRef.onChildChanged.listen(_onEntryChanged);
+  }
+
+  _onEntryAdded(Event event) {
+    setState(() {
+      items.add(Item.fromSnapshot(event.snapshot));
+    });
+  }
+
+  _onEntryChanged(Event event) {
+    var old = items.singleWhere((entry) {
+      return entry.key == event.snapshot.key;
+    });
+    setState(() {
+      items[items.indexOf(old)] = Item.fromSnapshot(event.snapshot);
+    });
+  }
+
+  void handleSubmit() {
+    final FormState form = formKey.currentState;
+
+    if (form.validate()) {
+      form.save();
+      form.reset();
+      itemRef.push().set(item.toJson());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('FB example'),
+      ),
+      resizeToAvoidBottomPadding: false,
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            flex: 0,
+            child: Center(
+              child: Form(
+                key: formKey,
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.info),
+                      title: TextFormField(
+                        initialValue: "",
+                        onSaved: (val) => item.title = val,
+                        validator: (val) => val == "" ? val : null,
+                      ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.info),
+                      title: TextFormField(
+                        initialValue: '',
+                        onSaved: (val) => item.body = val,
+                        validator: (val) => val == "" ? val : null,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: () {
+                        handleSubmit();
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
-            Flexible(
-              child: Container(
-                  child: SizedBox.expand(
-                child: RaisedButton(
-                  color: Colors.white,
-                  onPressed: _recordVideo,
-                  child: Text(secondButtonText,
-                      style: TextStyle(
-                          fontSize: textSize, color: Colors.blueGrey)),
-                ),
-              )),
-              flex: 1,
-            )
-          ],
-        ),
+          ),
+          Flexible(
+            child: FirebaseAnimatedList(
+              query: itemRef,
+              itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                  Animation<double> animation, int index) {
+                return new ListTile(
+                  leading: Icon(Icons.message),
+                  title: Text(items[index].title),
+                  subtitle: Text(items[index].body),
+                );
+              },
+            ),
+          ),
+        ],
       ),
-    ));
+    );
   }
+}
 
-  void _takePhoto() async {
-    ImagePicker.pickImage(source: ImageSource.camera)
-        .then((File recordedImage) {
-      if (recordedImage != null && recordedImage.path != null) {
-        //setState(() {
-         // firstButtonText = 'saving in progress...';
-        //});
-        GallerySaver.saveImage(recordedImage.path, albumName: albumName)
-            .then((bool success) {
-         // setState(() {
-           // firstButtonText = 'image saved!';
-         // });
-        });
-      }
-    });
+class Item {
+  String key;
+  String title;
+  String body;
+
+  Item(this.title, this.body);
+
+  Item.fromSnapshot(DataSnapshot snapshot)
+      : key = snapshot.key,
+        title = snapshot.value["title"],
+        body = snapshot.value["body"];
+
+  toJson() {
+    return {
+      "title": title,
+      "body": body,
+    };
   }
-
-  void _recordVideo() async {
-    ImagePicker.pickVideo(source: ImageSource.camera)
-        .then((File recordedVideo) {
-      if (recordedVideo != null && recordedVideo.path != null) {
-       // setState(() {
-         // secondButtonText = 'saving in progress...';
-        //});
-        GallerySaver.saveVideo(recordedVideo.path, albumName: albumName)
-            .then((bool success) {
-         // setState(() {
-          //  secondButtonText = 'video saved!';
-         // });
-        });
-      }
-    });
-  }
-
-  // ignore: unused_element
-  void _saveNetworkVideo() async {
-    String path =
-        'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4';
-    GallerySaver.saveVideo(path, albumName: albumName).then((bool success) {
-      //setState(() {
-       // print('Video is saved');
-      //});
-    });
-  }
-
-  // ignore: unused_element
-  void _saveNetworkImage() async {
-    String path =
-        'https://image.shutterstock.com/image-photo/montreal-canada-july-11-2019-600w-1450023539.jpg';
-    GallerySaver.saveImage(path, albumName: albumName).then((bool success) {
-      //setState(() {
-       // print('Image is saved');
-      //});
-    });
-  }
-
-
-
- 
-
-
-
-
-  }
+}

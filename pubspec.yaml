@@ -24,6 +24,8 @@ dependencies:
   path:
   gallery_saver:
   image_picker:
+  firebase_database: 
+  firebase_core: 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

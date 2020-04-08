@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "880571513438",
+    "firebase_url": "https://test1-1556906641770.firebaseio.com",
+    "project_id": "test1-1556906641770",
+    "storage_bucket": "test1-1556906641770.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880571513438:android:89187bf84617940fdb12cf",
+        "android_client_info": {
+          "package_name": "com.example.cameratest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "880571513438-o5i2tqpttclpcrmkn7lvisohpa5reatr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl2Lp3Nhh3NbNqJZVYFP1VA1ISVioZ4Y0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "880571513438-o5i2tqpttclpcrmkn7lvisohpa5reatr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
